@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/stock-sentiment-app/static/css/main.cf8cb218.css",
-    "main.js": "/stock-sentiment-app/static/js/main.51340927.js",
+    "main.js": "/stock-sentiment-app/static/js/main.1432dba2.js",
     "static/js/488.e75445ad.chunk.js": "/stock-sentiment-app/static/js/488.e75445ad.chunk.js",
     "index.html": "/stock-sentiment-app/index.html",
     "main.cf8cb218.css.map": "/stock-sentiment-app/static/css/main.cf8cb218.css.map",
-    "main.51340927.js.map": "/stock-sentiment-app/static/js/main.51340927.js.map",
+    "main.1432dba2.js.map": "/stock-sentiment-app/static/js/main.1432dba2.js.map",
     "488.e75445ad.chunk.js.map": "/stock-sentiment-app/static/js/488.e75445ad.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cf8cb218.css",
-    "static/js/main.51340927.js"
+    "static/js/main.1432dba2.js"
   ]
 }

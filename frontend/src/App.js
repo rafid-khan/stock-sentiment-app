@@ -33,21 +33,21 @@ function App() {
       );
 
       console.log("Avg Sentiment Response:", avgSentimentResponse.data);
-      setAvgSentiment(avgSentimentResponse.data.avg_sentiment); // Store overall sentiment
+      setAvgSentiment(avgSentimentResponse.data.avg_sentiment);
 
-      // ✅ Fetch individual news headlines with sentiment
+      // ✅ Fetch news headlines with sentiment scores
       const newsResponse = await axios.get(
         `https://stock-sentiment-api.up.railway.app/stock_news_sentiment/?ticker=${ticker}`
       );
 
-      console.log("API Response:", newsResponse.data);
+      console.log("News Sentiment Response:", newsResponse.data);
 
-      if (newsResponse.data.length === 0) {
-        setError("No sentiment data available for this ticker.");
-        return;
+      if (!Array.isArray(newsResponse.data)) {
+        throw new Error("Invalid API response for news sentiment");
       }
 
       setArticles(newsResponse.data);
+
     } catch (err) {
       setError("Failed to fetch sentiment. Try again later.");
       console.error("Error fetching sentiment:", err);
@@ -104,8 +104,8 @@ function App() {
                   </a>
                 </Col>
                 <Col md={4} className="text-end">
-                  <span className={article.compound > 0 ? "text-success" : "text-danger"}>
-                    Sentiment: {article.compound.toFixed(4)}
+                  <span className={article.sentiment_score > 0 ? "text-success" : "text-danger"}>
+                    Sentiment: {article.sentiment_score.toFixed(4)}
                   </span>
                 </Col>
               </Row>

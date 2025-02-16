@@ -20,6 +20,10 @@ app.add_middleware(
 # Initialize VADER sentiment analyzer
 analyzer = SentimentIntensityAnalyzer()
 
+@app.get("/")
+def read_root():
+    return {"message": "FastAPI is running successfully!"}
+
 # Data model for API request
 class StockRequest(BaseModel):
     ticker: str

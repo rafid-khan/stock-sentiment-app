@@ -89,7 +89,7 @@ async def get_stock_news_sentiment(ticker: str):
 
     # ✅ Fetch real stock news (Replace with your API key)
     try:
-        response = requests.get(f"https://newsapi.org/v2/everything?q={ticker}&apiKey=YOUR_NEWSAPI_KEY")
+        response = requests.get(f"https://newsapi.org/v2/everything?q={ticker}&apiKey=720f4ab74dmshfd4d338ac93a715p12f4a2jsn00cec9a5efc4")
         news_data = response.json()
     except Exception as e:
         return {"error": f"Failed to fetch news: {str(e)}"}

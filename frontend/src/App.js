@@ -5,6 +5,7 @@ import { Container, Button, Form, ListGroup, Spinner, Alert, Row, Col } from "re
 function App() {
   const [ticker, setTicker] = useState("");
   const [articles, setArticles] = useState([]);
+  const [avgSentiment, setAvgSentiment] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,22 +23,31 @@ function App() {
       setError(null);
       setLoading(true);
       setArticles([]);
+      setAvgSentiment(null);
 
       console.log("Fetching sentiment for:", ticker);
 
-      // Fetch news articles and sentiment scores from FastAPI
-      const response = await axios.get(
+      // ✅ Fetch overall sentiment score
+      const avgSentimentResponse = await axios.get(
+        `https://stock-sentiment-api.up.railway.app/avg_sentiment/?ticker=${ticker}`
+      );
+
+      console.log("Avg Sentiment Response:", avgSentimentResponse.data);
+      setAvgSentiment(avgSentimentResponse.data.avg_sentiment); // Store overall sentiment
+
+      // ✅ Fetch individual news headlines with sentiment
+      const newsResponse = await axios.get(
         `https://stock-sentiment-api.up.railway.app/stock_news_sentiment/?ticker=${ticker}`
       );
 
-      console.log("API Response:", response.data);
+      console.log("API Response:", newsResponse.data);
 
-      if (response.data.length === 0) {
+      if (newsResponse.data.length === 0) {
         setError("No sentiment data available for this ticker.");
         return;
       }
 
-      setArticles(response.data);
+      setArticles(newsResponse.data);
     } catch (err) {
       setError("Failed to fetch sentiment. Try again later.");
       console.error("Error fetching sentiment:", err);
@@ -66,53 +76,42 @@ function App() {
       {/* Error Message */}
       {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
 
-      {/* Display Articles with Sentiments */}
-      {articles.length > 0 && (
-        <>
-          {/* Overall Sentiment Score (Average of all articles) */}
-          <div className="mt-4 text-center">
-            <h3>
-              Average Sentiment Score:{" "}
-              <strong>
-                {(
-                  articles.reduce((sum, article) => sum + article.compound, 0) /
-                  articles.length
-                ).toFixed(4)}
-              </strong>
-            </h3>
-            <p className="lead">
-              {interpretSentiment(
-                articles.reduce((sum, article) => sum + article.compound, 0) /
-                  articles.length
-              )}
-            </p>
-          </div>
+      {/* ✅ Display Overall Sentiment Score */}
+      {avgSentiment !== null && (
+        <div className="mt-4 text-center">
+          <h3>
+            **Overall Sentiment Score:** <strong>{avgSentiment.toFixed(4)}</strong>
+          </h3>
+          <p className="lead">{interpretSentiment(avgSentiment)}</p>
+        </div>
+      )}
 
-          <ListGroup className="mt-4">
-            <h4>Recent Headlines with Sentiments:</h4>
-            {articles.map((article, index) => (
-              <ListGroup.Item key={index}>
-                <Row>
-                  <Col md={8}>
-                    <a
-                      href={article.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="fw-bold"
-                    >
-                      {article.title}
-                    </a>
-                  </Col>
-                  <Col md={4} className="text-end">
-                    <span className={article.compound > 0 ? "text-success" : "text-danger"}>
-                      Sentiment: {article.compound.toFixed(4)}
-                    </span>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </>
+      {/* ✅ Display Articles with Sentiments */}
+      {articles.length > 0 && (
+        <ListGroup className="mt-4">
+          <h4>Recent Headlines with Sentiments:</h4>
+          {articles.map((article, index) => (
+            <ListGroup.Item key={index}>
+              <Row>
+                <Col md={8}>
+                  <a
+                    href={article.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fw-bold"
+                  >
+                    {article.title}
+                  </a>
+                </Col>
+                <Col md={4} className="text-end">
+                  <span className={article.compound > 0 ? "text-success" : "text-danger"}>
+                    Sentiment: {article.compound.toFixed(4)}
+                  </span>
+                </Col>
+              </Row>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       )}
     </Container>
   );

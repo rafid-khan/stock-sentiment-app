@@ -46,7 +46,7 @@ function App() {
       console.log("Headlines received:", extractedHeadlines);
 
       // Send headlines to FastAPI for sentiment analysis
-      const sentimentResponse = await axios.post("http://127.0.0.1:8000/predict/", {
+      const sentimentResponse = await axios.post( `${process.env.REACT_APP_API_URL}/predict/`, {
         ticker,
         headlines: extractedHeadlines,
       });
